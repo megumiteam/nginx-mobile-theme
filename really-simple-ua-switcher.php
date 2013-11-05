@@ -26,18 +26,47 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require(dirname(__FILE__).'/vendor/autoload.php');
 
-$rsua = new Amimoto_Mobile();
-$rsua->init();
+$amimoto_mobile = new Amimoto_Mobile();
+$amimoto_mobile->init();
 
 class Amimoto_Mobile {
-
-function __construct()
-{
-}
 
 public function init()
 {
     add_action('plugins_loaded', array($this, 'plugins_loaded'), 9999);
+
+    if (!defined('AMIMOTO_MOBILE_THEME') || !AMIMOTO_MOBILE_THEME) {
+        add_action('customize_register', array($this, 'customize_register'));
+    }
+}
+
+public function customize_register($wp_customize)
+{
+    $wp_customize->add_section('amimob', array(
+        'title'          => 'Mobile Theme',
+        'priority'       => 9999,
+    ));
+
+    $current_theme = wp_get_theme();
+    $wp_customize->add_setting('amimob_mobile_theme', array(
+        'default'        => $current_theme->get_stylesheet(),
+        'type'           => 'option',
+        'capability'     => 'switch_themes',
+    ));
+
+    $all_themes = wp_get_themes();
+    $themes = array();
+    foreach ($all_themes as $theme_name => $theme) {
+        $themes[$theme_name] = $theme->get('Name');
+    }
+
+    $wp_customize->add_control('amimob_mobile_theme', array(
+        'settings' => 'amimob_mobile_theme',
+        'label'    =>'Mobile Theme',
+        'section'  => 'amimob',
+        'type'     => 'select',
+        'choices'  => $themes
+    ));
 }
 
 public function plugins_loaded()
@@ -50,7 +79,7 @@ public function plugins_loaded()
             $current_theme = wp_get_theme();
             $mobile_theme = get_option(
                 "amimob_mobile_theme",
-                $current_theme->get('Template')
+                $current_theme->get_stylesheet()
             );
         }
         /*
@@ -102,5 +131,6 @@ private function mobile_detect()
     return apply_filters("amimob_mobile_detect", $mobile_detect);
 }
 
-}
+} // end class
 
+// EOF
