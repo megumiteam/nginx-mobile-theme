@@ -1,4 +1,4 @@
-=== Simple GA Ranking  ===
+=== Really Simple UA Switcher ===
 Contributors: megumithemes
 Tags: User Agent
 Requires at least: 3.7.1
