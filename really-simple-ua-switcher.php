@@ -34,9 +34,43 @@ class Amimoto_Mobile {
 public function init()
 {
     add_action('plugins_loaded', array($this, 'plugins_loaded'), 9999);
+}
 
-    if (!defined('AMIMOTO_MOBILE_THEME') || !AMIMOTO_MOBILE_THEME) {
-        add_action('customize_register', array($this, 'customize_register'));
+public function plugins_loaded()
+{
+    if (!has_filter('amimob_mobile_theme')) {
+        if (!defined('AMIMOTO_MOBILE_THEME') || !AMIMOTO_MOBILE_THEME) {
+            add_action('customize_register', array($this, 'customize_register'));
+        }
+    }
+
+    $mobile_detect = $this->mobile_detect();
+    if ($mobile_detect) {
+        if (defined('AMIMOTO_MOBILE_THEME') && AMIMOTO_MOBILE_THEME) {
+            $mobile_theme = AMIMOTO_MOBILE_THEME;
+        } else {
+            $current_theme = wp_get_theme();
+            $mobile_theme = get_option(
+                "amimob_mobile_theme",
+                $current_theme->get_stylesheet()
+            );
+        }
+        /*
+         * Filter the theme slug for mobile
+         *
+         * @param string $mobile_theme theme slug
+         */
+        $mobile_theme = apply_filters(
+            'amimob_mobile_theme',
+            $mobile_theme,
+            $mobile_detect
+        );
+        $this->switch_theme($mobile_theme);
+
+        add_filter(
+            'nginxchampuru_get_the_url',
+            array($this, 'nginxchampuru_get_the_url')
+        );
     }
 }
 
@@ -67,37 +101,6 @@ public function customize_register($wp_customize)
         'type'     => 'select',
         'choices'  => $themes
     ));
-}
-
-public function plugins_loaded()
-{
-    $mobile_detect = $this->mobile_detect();
-    if ($mobile_detect) {
-        if (defined('AMIMOTO_MOBILE_THEME') && AMIMOTO_MOBILE_THEME) {
-            $mobile_theme = AMIMOTO_MOBILE_THEME;
-        } else {
-            $current_theme = wp_get_theme();
-            $mobile_theme = get_option(
-                "amimob_mobile_theme",
-                $current_theme->get_stylesheet()
-            );
-        }
-        /*
-         * Filter the theme slug for mobile
-         *
-         * @param string $mobile_theme theme slug
-         */
-        $mobile_theme = apply_filters(
-            'amimob_mobile_theme-'.$mobile_detect,
-            $mobile_theme
-        );
-        $this->switch_theme($mobile_theme);
-
-        add_filter(
-            'nginxchampuru_get_the_url',
-            array($this, 'nginxchampuru_get_the_url')
-        );
-    }
 }
 
 public function nginxchampuru_get_the_url($url)
