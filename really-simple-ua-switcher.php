@@ -47,7 +47,11 @@ public function plugins_loaded()
         if (defined('AMIMOTO_MOBILE_THEME') && AMIMOTO_MOBILE_THEME) {
             $mobile_theme = AMIMOTO_MOBILE_THEME;
         } else {
-            $mobile_theme = get_option("amimob_mobile_theme", wp_get_theme());
+            $current_theme = wp_get_theme();
+            $mobile_theme = get_option(
+                "amimob_mobile_theme",
+                $current_theme->get('Template')
+            );
         }
         /*
          * Filter the theme slug for mobile
@@ -60,11 +64,14 @@ public function plugins_loaded()
         );
         $this->switch_theme($mobile_theme);
 
-        add_filter('nginxchampuru_db_cached_url', 'nginxchampuru_db_cached_url');
+        add_filter(
+            'nginxchampuru_get_the_url',
+            array($this, 'nginxchampuru_get_the_url')
+        );
     }
 }
 
-public function nginxchampuru_db_cached_url($url)
+public function nginxchampuru_get_the_url($url)
 {
     $mobile_detect = $this->mobile_detect();
     return $url.$mobile_detect;
@@ -80,11 +87,11 @@ private function mobile_detect()
 {
     $mobile_detect = '';
 
-    if (isset($_SERVER['X-UA-Detect']) && $_SERVER['X-UA-Detect']) {
+    if (isset($_SERVER['HTTP_X_UA_DETECT']) && $_SERVER['HTTP_X_UA_DETECT']) {
         // ktai or smartphone or smartphone.off on Amimoto
-        $mobile_detect = str_replace('@', '', $_SERVER['X-UA-Detect']);
+        $mobile_detect = $_SERVER['HTTP_X_UA_DETECT'];
     } elseif (function_exists('wp_is_mobile') && wp_is_mobile()) {
-        $mobile_detect = 'smartphone';
+        $mobile_detect = '@smartphone';
     }
 
     /*
