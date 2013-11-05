@@ -49,6 +49,11 @@ public function plugins_loaded()
         } else {
             $mobile_theme = get_option("amimob_mobile_theme", wp_get_theme());
         }
+        /*
+         * Filter the theme slug for mobile
+         *
+         * @param string $mobile_theme theme slug
+         */
         $mobile_theme = apply_filters(
             'amimob_mobile_theme-'.$mobile_detect,
             $mobile_theme
@@ -76,12 +81,17 @@ private function mobile_detect()
     $mobile_detect = '';
 
     if (isset($_SERVER['X-UA-Detect']) && $_SERVER['X-UA-Detect']) {
-        // @ktai ore @smartphone or @smartphone.off on Amimoto
-        $mobile_detect = $_SERVER['X-UA-Detect'];
+        // ktai or smartphone or smartphone.off on Amimoto
+        $mobile_detect = str_replace('@', '', $_SERVER['X-UA-Detect']);
     } elseif (function_exists('wp_is_mobile') && wp_is_mobile()) {
-        $mobile_detect = '@smartphone';
+        $mobile_detect = 'smartphone';
     }
 
+    /*
+     * Filter the determined user-agent by nginx
+     *
+     * @param string $mobile_detect ktai or smartphone or smartphone.off on Amimoto
+     */
     return apply_filters("amimob_mobile_detect", $mobile_detect);
 }
 
