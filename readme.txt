@@ -9,7 +9,7 @@ This plugin switches themes according to the User Agent.
 
 == Description ==
 
-This plugin switches themes according to the User Agent.
+This plugin switches themes according to the User Agent. 
 
 = How use =
 1. Using the rsus_regular_expression filter, specifies conditions with regular expressions. Default regular expression as below:
