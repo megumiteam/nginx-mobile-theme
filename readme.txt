@@ -5,16 +5,16 @@ Requires at least: 3.7.1
 Tested up to: 3.7.1
 Stable tag: 1.0
 
-ユーザーエージェントを判定してテーマを切り分けるプラグインです。
+This plugin switches themes according to the User Agent.
 
 == Description ==
 
-ユーザーエージェントを判定してテーマを切り分けるプラグインです。
+This plugin switches themes according to the User Agent.
 
 = How use =
-1. rsus_regular_expressionフィルタを使用してテーマを切り分ける条件を正規表現で記述してください。デフォルトでは下記の正規表現が適用されます。
+1. Using the rsus_regular_expression filter, specifies conditions with regular expressions. Default regular expression as below:
 /(iPhone|iPod|incognito|webmate|Android|dream|CUPCAKE|froyo|BlackBerry|webOS|s8000|bada|IEMobile|Googlebot\-Mobile|AdsBot\-Google)/i
-2. rsus_switch_theme_nameフィルタを使用して1の条件にマッチした際に切り分けを行いたいテーマ名を記述してください。
+2. Using the rsus_switch_theme_name filter, specifies a theme name which you would like to use with the above conditions.
 
 = Translators =
 * English(en) - [megumithemes](http://profiles.wordpress.org/megumithemes/)
