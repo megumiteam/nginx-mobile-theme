@@ -26,10 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require(dirname(__FILE__).'/vendor/autoload.php');
 
-$rsua = new Really_Simple_UA_Switcher();
+$rsua = new Amimoto_Mobile();
 $rsua->init();
 
-class Really_Simple_UA_Switcher {
+class Amimoto_Mobile {
 
 function __construct()
 {
@@ -44,9 +44,13 @@ public function plugins_loaded()
 {
     $mobile_detect = $this->mobile_detect();
     if ($mobile_detect) {
-        $mobile_theme = get_option("rsus_mobile_theme", wp_get_theme());
+        if (defined('AMIMOTO_MOBILE_THEME') && AMIMOTO_MOBILE_THEME) {
+            $mobile_theme = AMIMOTO_MOBILE_THEME;
+        } else {
+            $mobile_theme = get_option("amimob_mobile_theme", wp_get_theme());
+        }
         $mobile_theme = apply_filters(
-            'rsus_mobile_theme-'.$mobile_detect,
+            'amimob_mobile_theme-'.$mobile_detect,
             $mobile_theme
         );
         $this->switch_theme($mobile_theme);
@@ -78,7 +82,7 @@ private function mobile_detect()
         $mobile_detect = '@smartphone';
     }
 
-    return apply_filters("rsus_mobile_detect", $mobile_detect);
+    return apply_filters("amimob_mobile_detect", $mobile_detect);
 }
 
 }
