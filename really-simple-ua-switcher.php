@@ -1,13 +1,13 @@
 <?php 
 /*
-Plugin Name: Really Simple UA Switcher
-Plugin URI: http://digitalcube.jp
+Plugin Name: Nginx Mobile Theme
+Plugin URI: http://ninjax.cc/
 Description: 
-Author: megumithemes
+Author: miyauchi, megumithemes
 Version: 1.0
-Author URI: http://digitalcube.jp
+Author URI: http://ninjax.cc/
 
-Copyright 2013 megumithemes (email : info@digitalcube.jp)
+Copyright 2013 megumithemes (email : info@ninjax.cc)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,10 +26,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require(dirname(__FILE__).'/vendor/autoload.php');
 
-$amimoto_mobile = new Amimoto_Mobile();
+$amimoto_mobile = new Nginx_Mobile_Theme();
 $amimoto_mobile->init();
 
-class Amimoto_Mobile {
+class Nginx_Mobile_Theme{
+
+private $mobile_detects = array('@mobile');
+private $nginxcc = 'nginx-cache-controller/nginx-champuru.php';
 
 public function init()
 {
@@ -38,34 +41,23 @@ public function init()
 
 public function plugins_loaded()
 {
-    if (!has_filter('amimob_mobile_theme')) {
-        if (!defined('AMIMOTO_MOBILE_THEME') || !AMIMOTO_MOBILE_THEME) {
-            add_action('customize_register', array($this, 'customize_register'));
-        }
+    if (!has_filter('nginxmobile_mobile_themes')) {
+		add_action('customize_register', array($this, 'customize_register'));
     }
 
     $mobile_detect = $this->mobile_detect();
     if ($mobile_detect) {
-        if (defined('AMIMOTO_MOBILE_THEME') && AMIMOTO_MOBILE_THEME) {
-            $mobile_theme = AMIMOTO_MOBILE_THEME;
-        } else {
-            $current_theme = wp_get_theme();
-            $mobile_theme = get_option(
-                "amimob_mobile_theme",
-                $current_theme->get_stylesheet()
-            );
-        }
-        /*
+		$mobile_theme = get_option("nginxmobile_mobile_themes");
+        /**
          * Filter the theme slug for mobile
          *
          * @param string $mobile_theme theme slug
          */
-        $mobile_theme = apply_filters(
-            'amimob_mobile_theme',
-            $mobile_theme,
-            $mobile_detect
-        );
-        $this->switch_theme($mobile_theme);
+        $mobile_theme = apply_filters('nginxmobile_mobile_themes', $mobile_theme);
+		$detect = str_replace('@', '', $mobile_detect);
+		if (isset($mobile_theme[$detect]) && $mobile_theme[$detect]) {
+        	$this->switch_theme($mobile_theme[$detect]);
+		}
 
         add_filter(
             'nginxchampuru_get_the_url',
@@ -76,37 +68,50 @@ public function plugins_loaded()
 
 public function customize_register($wp_customize)
 {
-    $wp_customize->add_section('amimob', array(
-        'title'          => 'Mobile Theme',
-        'priority'       => 9999,
-    ));
-
-    $current_theme = wp_get_theme();
-    $wp_customize->add_setting('amimob_mobile_theme', array(
-        'default'        => $current_theme->get_stylesheet(),
-        'type'           => 'option',
-        'capability'     => 'switch_themes',
-    ));
-
     $all_themes = wp_get_themes();
     $themes = array();
     foreach ($all_themes as $theme_name => $theme) {
         $themes[$theme_name] = $theme->get('Name');
     }
 
-    $wp_customize->add_control('amimob_mobile_theme', array(
-        'settings' => 'amimob_mobile_theme',
-        'label'    =>'Mobile Theme',
-        'section'  => 'amimob',
-        'type'     => 'select',
-        'choices'  => $themes
+    $wp_customize->add_section('nginxmobile', array(
+        'title'          => 'Mobile Theme',
+        'priority'       => 9999,
     ));
+
+	foreach ($this->get_mobile_detects() as $detect) {
+		$detect = str_replace('@', '', $detect);
+		$current_theme = wp_get_theme();
+		$wp_customize->add_setting('nginxmobile_mobile_themes['.$detect.']', array(
+			'default'        => $current_theme->get_stylesheet(),
+			'type'           => 'option',
+			'capability'     => 'switch_themes',
+		));
+
+		$wp_customize->add_control('nginxmobile_mobile_themes-'.$detect, array(
+			'settings' => 'nginxmobile_mobile_themes['.$detect.']',
+			'label'    => ucfirst($detect).' theme',
+			'section'  => 'nginxmobile',
+			'type'     => 'select',
+			'choices'  => $themes
+		));
+	}
 }
 
 public function nginxchampuru_get_the_url($url)
 {
     $mobile_detect = $this->mobile_detect();
     return $url.$mobile_detect;
+}
+
+private function get_mobile_detects()
+{
+	/**
+	 * Filter the mobile detects
+	 *
+	 * @param array $mobile_detects An array of determined result of user agent
+	 */
+	return apply_filters("nginxmobile_mobile_detects", $this->mobile_detects);
 }
 
 private function switch_theme($theme)
@@ -120,18 +125,15 @@ private function mobile_detect()
     $mobile_detect = '';
 
     if (isset($_SERVER['HTTP_X_UA_DETECT']) && $_SERVER['HTTP_X_UA_DETECT']) {
-        // ktai or smartphone or smartphone.off on Amimoto
         $mobile_detect = $_SERVER['HTTP_X_UA_DETECT'];
-    } elseif (function_exists('wp_is_mobile') && wp_is_mobile()) {
-        $mobile_detect = '@smartphone';
     }
 
-    /*
+    /**
      * Filter the determined user-agent by nginx
      *
-     * @param string $mobile_detect ktai or smartphone or smartphone.off on Amimoto
+     * @param string $mobile_detect ktai or smartphone or smartphone.off on Nginx
      */
-    return apply_filters("amimob_mobile_detect", $mobile_detect);
+    return apply_filters("nginxmobile_mobile_detect", $mobile_detect);
 }
 
 } // end class
