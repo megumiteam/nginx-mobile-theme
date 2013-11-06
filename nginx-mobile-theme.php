@@ -31,7 +31,7 @@ $amimoto_mobile->init();
 
 class Nginx_Mobile_Theme{
 
-private $mobile_detects = array('@mobile');
+private $mobile_detects = array('@smartphone');
 private $nginxcc = 'nginx-cache-controller/nginx-champuru.php';
 
 public function init()
