@@ -89,7 +89,7 @@ proxy_set_header  X-UA-Detect        $mobile; # add new line`
 
 3. Define constant in the wp-config.php
 
-`define('IS_AMIMOTO', true)`
+`define('IS_AMIMOTO', true);`
 
 == Installation ==
 
