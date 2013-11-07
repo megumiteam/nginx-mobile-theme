@@ -51,7 +51,7 @@ Nginx Mobile Theme will switch theme when '@smartphone' is received in the `$_SE
 2. Add custom mobile detection to the WordPress via `nginxmobile_mobile_detects` filter-hook.
 
 = Amimoto Support =
-The Amimoto is a full-tuned WordPress AMI on the AWS EC2.
+The [Amimoto](http://megumi-cloud.com/) is a full-tuned WordPress AMI on the AWS EC2.
 
 1. Uncomment /etc/nginx/conf.d/default.conf in line 17
 
