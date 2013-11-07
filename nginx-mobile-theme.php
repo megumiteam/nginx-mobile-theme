@@ -42,22 +42,22 @@ public function init()
 public function plugins_loaded()
 {
     if (!has_filter('nginxmobile_mobile_themes')) {
-		add_action('customize_register', array($this, 'customize_register'));
+        add_action('customize_register', array($this, 'customize_register'));
     }
 
     $mobile_detect = $this->mobile_detect();
     if ($mobile_detect) {
-		$mobile_theme = get_option("nginxmobile_mobile_themes");
+        $mobile_theme = get_option("nginxmobile_mobile_themes");
         /**
          * Filter the theme slug for mobile
          *
          * @param string $mobile_theme theme slug
          */
         $mobile_theme = apply_filters('nginxmobile_mobile_themes', $mobile_theme);
-		$detect = str_replace('@', '', $mobile_detect);
-		if (isset($mobile_theme[$detect]) && $mobile_theme[$detect]) {
-        	$this->switch_theme($mobile_theme[$detect]);
-		}
+        $detect = str_replace('@', '', $mobile_detect);
+        if (isset($mobile_theme[$detect]) && $mobile_theme[$detect]) {
+            $this->switch_theme($mobile_theme[$detect]);
+        }
 
         add_filter(
             'nginxchampuru_get_the_url',
@@ -79,23 +79,23 @@ public function customize_register($wp_customize)
         'priority'       => 9999,
     ));
 
-	foreach ($this->get_mobile_detects() as $detect) {
-		$detect = str_replace('@', '', $detect);
-		$current_theme = wp_get_theme();
-		$wp_customize->add_setting('nginxmobile_mobile_themes['.$detect.']', array(
-			'default'        => $current_theme->get_stylesheet(),
-			'type'           => 'option',
-			'capability'     => 'switch_themes',
-		));
+    foreach ($this->get_mobile_detects() as $detect) {
+        $detect = str_replace('@', '', $detect);
+        $current_theme = wp_get_theme();
+        $wp_customize->add_setting('nginxmobile_mobile_themes['.$detect.']', array(
+            'default'        => $current_theme->get_stylesheet(),
+            'type'           => 'option',
+            'capability'     => 'switch_themes',
+        ));
 
-		$wp_customize->add_control('nginxmobile_mobile_themes-'.$detect, array(
-			'settings' => 'nginxmobile_mobile_themes['.$detect.']',
-			'label'    => ucfirst($detect).' theme',
-			'section'  => 'nginxmobile',
-			'type'     => 'select',
-			'choices'  => $themes
-		));
-	}
+        $wp_customize->add_control('nginxmobile_mobile_themes-'.$detect, array(
+            'settings' => 'nginxmobile_mobile_themes['.$detect.']',
+            'label'    => ucfirst($detect).' theme',
+            'section'  => 'nginxmobile',
+            'type'     => 'select',
+            'choices'  => $themes
+        ));
+    }
 }
 
 public function nginxchampuru_get_the_url($url)
@@ -106,12 +106,12 @@ public function nginxchampuru_get_the_url($url)
 
 private function get_mobile_detects()
 {
-	/**
-	 * Filter the mobile detects
-	 *
-	 * @param array $mobile_detects An array of determined result of user agent
-	 */
-	return apply_filters("nginxmobile_mobile_detects", $this->mobile_detects);
+    /**
+     * Filter the mobile detects
+     *
+     * @param array $mobile_detects An array of determined result of user agent
+     */
+    return apply_filters("nginxmobile_mobile_detects", $this->mobile_detects);
 }
 
 private function switch_theme($theme)

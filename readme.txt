@@ -1,15 +1,15 @@
-=== Really Simple UA Switcher ===
-Contributors: megumithemes
-Tags: User Agent
+=== Nginx Mobile Themes ===
+Contributors: miyauchi,megumithemes
+Tags: nginx, mobile, theme, smartphone, tablet, iphone, ipad, android
 Requires at least: 3.7.1
 Tested up to: 3.7.1
 Stable tag: 1.0
 
-This plugin switches themes according to the User Agent.
+This plugin switches themes according to the User Agent on the Nginx reverse proxy.
 
 == Description ==
 
-This plugin switches themes according to the User Agent.
+This plugin switches themes according to the User Agent on the Nginx reverse proxy.
 
 = How use =
 1. Using the rsus_regular_expression filter, specifies conditions with regular expressions. Default regular expression as below:
@@ -21,7 +21,7 @@ This plugin switches themes according to the User Agent.
 
 == Installation ==
 
-1. Upload `really-simple-ua-switcher` to the `/wp-content/plugins/` directory.
+1. Upload `nginx-mobile-theme` to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Screenshots ==
