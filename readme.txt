@@ -11,13 +11,13 @@ This plugin allows you to switch theme according to the User Agent on the Nginx 
 
 This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 
-Nginx Mobile Theme requires following.
+Nginx Mobile Theme is requires as follows.
 
 * PHP 5.3 or later
 * WordPress 3.7 or later
 * [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/) 2.0.0 or later
 
-* You can flush cache automatically. It is requires [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/)
+* You can flush mobile's and pc's each caches automatically via [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/)
 * Allow you to switch theme according to the user-agent.
 * Allow you to customize multiple mobile device support via filter-hook.
 
@@ -43,12 +43,27 @@ Nginx Mobile Theme will switch theme when '@smartphone' is received in the `$_SE
 
 1. Please access to the theme-customizer in the WordPress admin area.
 2. Please select Mobile Theme in the drop-down.
-3. Click to save "Save & Publish" button.
+3. Click "Save & Publish" button to save.
 
 = Multiple mobile device support =
 
 1. Add custom mobile detection to the nginx.conf.
 2. Add custom mobile detection to the WordPress via `nginxmobile_mobile_detects` filter-hook.
+
+nginx.conf:
+`if ($http_user_agent ~* '(iPhone|iPod)') {
+    set $mobile "@smartphone";
+}
+if ($http_user_agent ~* 'iPad') {
+    set $mobile "@tablet";
+}`
+
+Your custom plugin:
+`add_filter('nginxmobile_mobile_detects', function(){
+    return array('@smartphone', '@tablet');
+});`
+
+3. As a result, allow you to select theme for @smartphone and @tablet individually in the theme-customizer.
 
 = Amimoto Support =
 The [Amimoto](http://megumi-cloud.com/) is a full-tuned WordPress AMI on the AWS EC2.
