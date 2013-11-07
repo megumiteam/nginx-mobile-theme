@@ -142,8 +142,8 @@ private function get_mobile_detects()
 
 private function switch_theme($theme)
 {
-    $theme = new Megumi_SwitchTheme($theme);
-    $theme->apply();
+    $switch_theme = new Megumi_SwitchTheme($theme);
+    $switch_theme->apply();
 }
 
 private function mobile_detect()
