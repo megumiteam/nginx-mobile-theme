@@ -41,6 +41,10 @@ public function init()
 
 public function plugins_loaded()
 {
+    if (defined('IS_AMIMOTO') && IS_AMIMOTO === true) {
+        $this->amimoto_support(); // see http://megumi-cloud.com/
+    }
+
     if (!has_filter('nginxmobile_mobile_themes')) {
         add_action('customize_register', array($this, 'customize_register'));
     }
@@ -51,6 +55,7 @@ public function plugins_loaded()
         /**
          * Filter the theme slug for mobile
          *
+         * @since 1.0.0
          * @param string $mobile_theme theme slug
          */
         $mobile_theme = apply_filters('nginxmobile_mobile_themes', $mobile_theme);
@@ -88,9 +93,19 @@ public function customize_register($wp_customize)
             'capability'     => 'switch_themes',
         ));
 
+        if ($detect === 'ktai') {
+            if (defined('WP_LANG') && WP_LANG === 'ja') {
+                $label = ucfirst($detect).' theme';
+            } else {
+                $label = 'Cell-Phone theme';
+            }
+        } else {
+            $label = ucfirst($detect).' theme';
+        }
+
         $wp_customize->add_control('nginxmobile_mobile_themes-'.$detect, array(
             'settings' => 'nginxmobile_mobile_themes['.$detect.']',
-            'label'    => ucfirst($detect).' theme',
+            'label'    => $label,
             'section'  => 'nginxmobile',
             'type'     => 'select',
             'choices'  => $themes
@@ -101,7 +116,17 @@ public function customize_register($wp_customize)
 public function nginxchampuru_get_the_url($url)
 {
     $mobile_detect = $this->mobile_detect();
-    return $mobile_detect.$url;
+    return sprintf(
+        /**
+         * Filter the proxy key for reverse proxy.
+         *
+         * @since 1.0.0
+         * @param string $proxy_key An string for proxy key.
+         * @param string $url       An original URL.
+         */
+        apply_filters("nginxmobile_proxy_key", '%s'.$url, $url),
+        $mobile_detect
+    );
 }
 
 private function get_mobile_detects()
@@ -109,6 +134,7 @@ private function get_mobile_detects()
     /**
      * Filter the mobile detects
      *
+     * @since 1.0.0
      * @param array $mobile_detects An array of determined result of user agent
      */
     return apply_filters("nginxmobile_mobile_detects", $this->mobile_detects);
@@ -129,11 +155,24 @@ private function mobile_detect()
     }
 
     /**
-     * Filter the determined user-agent by nginx
+     * Filter the determined user-agent from nginx
      *
-     * @param string $mobile_detect ktai or smartphone or smartphone.off on Nginx
+     * @since 1.0.0
+     * @param string $mobile_detect  e.g. "@smartphone"
      */
     return apply_filters("nginxmobile_mobile_detect", $mobile_detect);
+}
+
+private function amimoto_support()
+{
+    if (defined('IS_AMIMOTO') && IS_AMIMOTO === true) {
+        add_filter('nginxmobile_proxy_key', function($key, $url){
+            return $url.'%s';
+        }, 10, 2);
+        add_filter('nginxmobile_mobile_detects', function(){
+            return array('@ktai', '@smartphone');
+        });
+    }
 }
 
 } // end class

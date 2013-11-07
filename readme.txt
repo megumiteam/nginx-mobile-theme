@@ -11,7 +11,11 @@ This plugin allows you to switch theme according to the User Agent on the Nginx 
 
 This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 
-Nginx Mobile Theme requires WordPress 3.7+ with Nginx Cache Controller 2.0.0+.
+Nginx Mobile Theme requires following.
+
+* PHP 5.3 or later
+* WordPress 3.7 or later
+* [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/) 2.0.0 or later
 
 * You can flush cache automatically. It is requires [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/)
 * Allow you to switch theme according to the user-agent.
@@ -27,11 +31,7 @@ Add mobile device detection to the nginx.conf like following.
 
 Set proxy_cache_key like following.
 
-`proxy_cache_key "$scheme://$host$request_uri$mobile";`
-
-Send 404 header when visit to `http://example.com/@smartphone`.
-
-`location ~* @smartphone { access_log /dev/null; log_not_found off; return 404; }`
+`proxy_cache_key "$mobile$scheme://$host$request_uri";`
 
 Send custom request header to the backend.
 
@@ -48,7 +48,33 @@ Nginx Mobile Theme will switch theme when '@smartphone' is received in the `$_SE
 = Multiple mobile device support =
 
 1. Add custom mobile detection to the nginx.conf.
-2. Add custom mobile detects via `nginxmobile_mobile_detects` filter-hook.
+2. Add custom mobile detection to the WordPress via `nginxmobile_mobile_detects` filter-hook.
+
+= Amimoto Support =
+The Amimoto is a full-tuned WordPress AMI on the AWS EC2.
+
+1. Uncomment /etc/nginx/conf.d/default.conf in line 17
+
+before:
+`#include /etc/nginx/mobile-detect;`
+
+after:
+`include /etc/nginx/mobile-detect;`
+
+2. Add line to /etc/nginx/nginx.conf like following.
+
+before:
+`proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_set_header  Accept-Encoding    "";`
+
+after:
+`proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_set_header  Accept-Encoding    "";
+proxy_set_header  X-UA-Detect        $mobile; # add new line`
+
+3. Define constant in the wp-config.php
+
+`define('IS_AMIMOTO', true)`
 
 == Installation ==
 
