@@ -104,6 +104,9 @@ proxy_set_header  X-UA-Detect        $mobile; # add new line`
 
 = 1.1.0 =
 * Add support child theme.
+* Add notice when Nginx Cache Controller is not activated.
+
+https://github.com/megumiteam/nginx-mobile-theme/compare/1.0.0...1.1.0
 
 = 1.0.0 =
 * first release.
