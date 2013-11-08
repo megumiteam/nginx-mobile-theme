@@ -4,7 +4,7 @@ Plugin Name: Nginx Mobile Theme
 Plugin URI: http://ninjax.cc/
 Description: This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 Author: miyauchi, megumithemes
-Version: 1.0.0
+Version: 1.1.0
 Author URI: http://ninjax.cc/
 
 Copyright 2013 megumithemes (email : info@ninjax.cc)
@@ -32,7 +32,7 @@ $amimoto_mobile->init();
 class Nginx_Mobile_Theme{
 
 private $mobile_detects = array('@smartphone');
-private $nginxcc = 'nginx-cache-controller/nginx-champuru.php';
+private $nginxcc = 'nginx-champuru/nginx-champuru.php';
 
 public function init()
 {
