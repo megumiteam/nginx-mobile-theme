@@ -39,6 +39,12 @@ public function init()
     add_action('plugins_loaded', array($this, 'plugins_loaded'), 9999);
 }
 
+/**
+ * Fires when plugins_loaded hook.
+ *
+ * @access public
+ * @since  1.1.0
+ */
 public function plugins_loaded()
 {
     if (is_admin()) {
@@ -75,6 +81,12 @@ public function plugins_loaded()
     }
 }
 
+/**
+ * Register action to the admin_notice when Nginx Cache Controller is not activated.
+ *
+ * @access public
+ * @since  1.1.0
+ */
 public function admin_init()
 {
     if (function_exists('is_plugin_inactive') && is_plugin_inactive($this->nginxcc)) {
@@ -82,6 +94,12 @@ public function admin_init()
     }
 }
 
+/**
+ * Warning that Nginx Cache Controller is not activated.
+ *
+ * @access public
+ * @since  1.0.0
+ */
 public function admin_notice()
 {
     $install_url = admin_url('plugin-install.php?tab=search&s=nginx-champuru&plugin-search-input=Search+Plugins');
@@ -92,6 +110,12 @@ public function admin_notice()
     <?php
 }
 
+/**
+ * Register theme-selector to the theme-customizer.
+ *
+ * @access public
+ * @since  1.0.0
+ */
 public function customize_register($wp_customize)
 {
     $all_themes = wp_get_themes();
@@ -124,16 +148,27 @@ public function customize_register($wp_customize)
             $label = ucfirst($detect).' theme';
         }
 
-        $wp_customize->add_control('nginxmobile_mobile_themes-'.$detect, array(
-            'settings' => 'nginxmobile_mobile_themes['.$detect.']',
-            'label'    => $label,
-            'section'  => 'nginxmobile',
-            'type'     => 'select',
-            'choices'  => $themes
+        $wp_customize->add_control(new Megumi_ThemeCustomizerControl(
+            $wp_customize,
+            'nginxmobile_mobile_themes-'.$detect,
+            array(
+                'settings' => 'nginxmobile_mobile_themes['.$detect.']',
+                'label'    => $label,
+                'section'  => 'nginxmobile',
+                'type'     => 'select',
+                'choices'  => $themes,
+                'label_after' => ''
+            )
         ));
     }
 }
 
+/**
+ * Filter for the nginxchampuru_get_the_url hook in the Nginx Cache Controller plugin.
+ *
+ * @access public
+ * @since  1.0.0
+ */
 public function nginxchampuru_get_the_url($url)
 {
     $mobile_detect = $this->mobile_detect();
@@ -150,6 +185,12 @@ public function nginxchampuru_get_the_url($url)
     );
 }
 
+/**
+ * Return an array of mobile detects with filter.
+ *
+ * @access private
+ * @since  1.0.0
+ */
 private function get_mobile_detects()
 {
     /**
@@ -161,12 +202,24 @@ private function get_mobile_detects()
     return apply_filters("nginxmobile_mobile_detects", $this->mobile_detects);
 }
 
+/**
+ * Switch theme to $theme.
+ *
+ * @access private
+ * @since  1.0.0
+ */
 private function switch_theme($theme)
 {
     $switch_theme = new Megumi_SwitchTheme($theme);
     $switch_theme->apply();
 }
 
+/**
+ * Return the determined user-agent from environments with filter.
+ *
+ * @access private
+ * @since  1.0.0
+ */
 private function mobile_detect()
 {
     $mobile_detect = '';
@@ -184,6 +237,12 @@ private function mobile_detect()
     return apply_filters("nginxmobile_mobile_detect", $mobile_detect);
 }
 
+/**
+ * Some functions for support Amimoto AMI.
+ *
+ * @access private
+ * @since  1.0.0
+ */
 private function amimoto_support()
 {
     if (defined('IS_AMIMOTO') && IS_AMIMOTO === true) {
