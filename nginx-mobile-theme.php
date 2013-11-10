@@ -100,14 +100,16 @@ public function plugins_loaded()
  */
 public function home_url($url)
 {
-    if (isset($_GET['nginx-mobile-theme']) && $_GET['nginx-mobile-theme']) {
-        if (preg_match('/^[a-zA-Z0-9\-]+$/', $_GET['nginx-mobile-theme'])) {
-            return add_query_arg(
-                array(
-                    'nginx-mobile-theme' => $_GET['nginx-mobile-theme']
-                ),
-                $url
-            );
+    if (is_user_logged_in()) { // theme preview
+        if (isset($_GET['nginx-mobile-theme']) && $_GET['nginx-mobile-theme']) {
+            if (preg_match('/^[a-zA-Z0-9\-]+$/', $_GET['nginx-mobile-theme'])) {
+                return add_query_arg(
+                    array(
+                        'nginx-mobile-theme' => $_GET['nginx-mobile-theme']
+                    ),
+                    $url
+                );
+            }
         }
     }
     return $url;
