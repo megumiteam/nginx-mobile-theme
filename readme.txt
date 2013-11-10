@@ -17,20 +17,22 @@ Nginx Mobile Theme is requires as follows.
 * WordPress 3.7 or later
 * [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/) 2.0.0 or later
 
-* You can flush mobile's and pc's each caches automatically via [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/)
+= Some Features =
+
+* You can flush mobile's and pc's each caches automatically via [Nginx Cache Controller](http://wordpress.org/plugins/nginx-champuru/).
 * Allow you to switch theme according to the user-agent.
 * Allow you to customize multiple mobile device support via filter-hook.
 
 = Nginx Configuration =
 
-Add mobile device detection to the nginx.conf like following.
+Add mobile device detection to the nginx.conf.
 
 `set $mobile '';
 if ($http_user_agent ~* '(iPhone|iPod|incognito|webmate|Android|dream|CUPCAKE|froyo|BlackBerry|webOS|s8000|bada|IEMobile|Googlebot\-Mobile|AdsBot\-Google)') {
     set $mobile "@smartphone";
 }`
 
-Set proxy_cache_key like following.
+Set proxy_cache_key.
 
 `proxy_cache_key "$mobile$scheme://$host$request_uri";`
 
@@ -60,7 +62,7 @@ if ($http_user_agent ~* 'iPad') {
     set $mobile "@tablet";
 }`
 
-Your custom plugin:
+In your custom plugin:
 `add_filter('nginxmobile_mobile_detects', function(){
     return array('@smartphone', '@tablet');
 });`
