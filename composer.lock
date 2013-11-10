@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "efe4b63bf34f91916084c9ed2c017826",
+    "hash": "a00f02d59fb03a5a0e40a1f08c64ce9e",
     "packages": [
         {
             "name": "megumi/switch_theme",
@@ -44,16 +44,33 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:miya0001/theme_customizer_control.git",
-                "reference": "master"
+                "url": "https://github.com/miya0001/theme_customizer_control.git",
+                "reference": "22061a6850c86e3a163d231d529e130f24672275"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/miya0001/theme_customizer_control/zipball/master",
-                "reference": null,
-                "shasum": null
+                "url": "https://api.github.com/repos/miya0001/theme_customizer_control/zipball/22061a6850c86e3a163d231d529e130f24672275",
+                "reference": "22061a6850c86e3a163d231d529e130f24672275",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
             },
             "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Megumi_ThemeCustomizerControl": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL2"
+            ],
+            "description": "WordPress theme customizer custom control",
+            "keywords": [
+                "theme",
+                "wordpress"
+            ],
             "time": "2013-11-09 19:45:04"
         }
     ],

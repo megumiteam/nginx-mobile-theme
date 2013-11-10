@@ -3,7 +3,7 @@ Contributors: miyauchi,megumithemes
 Tags: nginx, mobile, theme, smartphone, tablet, iphone, ipad, android
 Requires at least: 3.7.1
 Tested up to: 3.7.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 
 This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 

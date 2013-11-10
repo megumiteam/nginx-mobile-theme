@@ -1,25 +1,4 @@
 {
-    "repositories": [
-        {
-            "type":"package",
-            "package": {
-                "name": "megumi/theme_customizer_control",
-                "version": "dev-master",
-                "dist": {
-                    "url": "https://github.com/miya0001/theme_customizer_control/zipball/master",
-                    "type": "zip"
-                },
-                "source": {
-                    "url": "git@github.com:miya0001/theme_customizer_control.git",
-                    "type": "git",
-                    "reference": "master"
-                }
-            }
-        }
-    ],
-    "autoload": {
-        "psr-0": { "Megumi_ThemeCustomizerControl": "vendor/megumi/theme_customizer_control/lib" }
-    },
     "require": {
         "megumi/switch_theme": "dev-master",
         "megumi/theme_customizer_control": "dev-master"
