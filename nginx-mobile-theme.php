@@ -26,8 +26,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require(dirname(__FILE__).'/vendor/autoload.php');
 
-$amimoto_mobile = new Nginx_Mobile_Theme();
-$amimoto_mobile->init();
+$nginx_mobile_theme = new Nginx_Mobile_Theme();
+$nginx_mobile_theme->init();
 
 class Nginx_Mobile_Theme{
 
@@ -49,6 +49,11 @@ public function plugins_loaded()
 {
     if (is_admin()) {
         add_action('admin_init', array($this, 'admin_init'));
+        add_action(
+            'customize_controls_print_scripts',
+            array($this, 'customize_controls_print_scripts'),
+            9999
+        );
     }
 
     if (defined('IS_AMIMOTO') && IS_AMIMOTO === true) {
@@ -73,12 +78,60 @@ public function plugins_loaded()
         if (isset($mobile_theme[$detect]) && $mobile_theme[$detect]) {
             $this->switch_theme($mobile_theme[$detect]);
         }
-
         add_filter(
             'nginxchampuru_get_the_url',
             array($this, 'nginxchampuru_get_the_url')
         );
+    } elseif (is_user_logged_in()) { // theme preview
+        if (isset($_GET['nginx-mobile-theme']) && $_GET['nginx-mobile-theme']) {
+            if (preg_match('/^[a-zA-Z0-9\-]+$/', $_GET['nginx-mobile-theme'])) {
+                $this->switch_theme($_GET['nginx-mobile-theme']);
+                add_filter('home_url', array($this, 'home_url'));
+            }
+        }
     }
+}
+
+/**
+ * Filter the url to preview url.
+ *
+ * @access public
+ * @since  1.2.0
+ */
+public function home_url($url)
+{
+    if (isset($_GET['nginx-mobile-theme']) && $_GET['nginx-mobile-theme']) {
+        if (preg_match('/^[a-zA-Z0-9\-]+$/', $_GET['nginx-mobile-theme'])) {
+            return add_query_arg(
+                array(
+                    'nginx-mobile-theme' => $_GET['nginx-mobile-theme']
+                ),
+                $url
+            );
+        }
+    }
+    return $url;
+}
+
+/**
+ * Register script in the head of wp-admin/customize.php
+ *
+ * @access public
+ * @since  1.2.0
+ */
+public function customize_controls_print_scripts()
+{
+?>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+    var $ = jQuery;
+    $('.theme-preview').click(function(){
+        var theme = $('select:first', $(this).parent().parent()).val();
+        window.open().location.href = '<?php echo home_url('/'); ?>?nginx-mobile-theme='+theme;
+    });
+});
+</script>
+<?
 }
 
 /**
@@ -95,7 +148,7 @@ public function admin_init()
 }
 
 /**
- * Warning that Nginx Cache Controller is not activated.
+ * Warning Nginx Cache Controller is not activated.
  *
  * @access public
  * @since  1.0.0
@@ -105,7 +158,8 @@ public function admin_notice()
     $install_url = admin_url('plugin-install.php?tab=search&s=nginx-champuru&plugin-search-input=Search+Plugins');
     ?>
     <div class="error">
-        <p>Nginx Mobile Theme is requires <strong>Nginx Cache Controller</strong>. <a href="<?php echo $install_url; ?>">Please click to install.</a></p>
+        <p>Nginx Mobile Theme is requires <strong>Nginx Cache Controller</strong>.
+            <a href="<?php echo $install_url; ?>">Please click to install.</a></p>
     </div>
     <?php
 }
@@ -130,7 +184,7 @@ public function customize_register($wp_customize)
     ));
 
     foreach ($this->get_mobile_detects() as $detect) {
-        $detect = str_replace('@', '', $detect);
+        $detect = esc_html(str_replace('@', '', $detect));
         $current_theme = wp_get_theme();
         $wp_customize->add_setting('nginxmobile_mobile_themes['.$detect.']', array(
             'default'        => $current_theme->get_stylesheet(),
@@ -138,7 +192,7 @@ public function customize_register($wp_customize)
             'capability'     => 'switch_themes',
         ));
 
-        if ($detect === 'ktai') {
+        if ($detect === 'ktai') { // amimoto fix
             if (defined('WP_LANG') && WP_LANG === 'ja') {
                 $label = ucfirst($detect).' theme';
             } else {
@@ -152,12 +206,12 @@ public function customize_register($wp_customize)
             $wp_customize,
             'nginxmobile_mobile_themes-'.$detect,
             array(
-                'settings' => 'nginxmobile_mobile_themes['.$detect.']',
-                'label'    => $label,
-                'section'  => 'nginxmobile',
-                'type'     => 'select',
-                'choices'  => $themes,
-                'label_after' => ''
+                'settings'    => 'nginxmobile_mobile_themes['.$detect.']',
+                'label'       => $label,
+                'section'     => 'nginxmobile',
+                'type'        => 'select',
+                'choices'     => $themes,
+                'label_after' => '<a href="javascript:void(0);" class="theme-preview">Theme Preview</a>',
             )
         ));
     }
