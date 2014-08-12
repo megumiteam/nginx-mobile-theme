@@ -160,7 +160,7 @@ public function admin_notice()
     $install_url = admin_url('plugin-install.php?tab=search&s=nginx-champuru&plugin-search-input=Search+Plugins');
     ?>
     <div class="error">
-        <p>Nginx Mobile Theme is requires <strong>Nginx Cache Controller</strong>.
+        <p>Nginx Mobile Theme requires <strong>Nginx Cache Controller</strong>.
             <a href="<?php echo $install_url; ?>">Please click to install.</a></p>
     </div>
     <?php
