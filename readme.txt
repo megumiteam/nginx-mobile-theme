@@ -11,7 +11,7 @@ This plugin allows you to switch theme according to the User Agent on the Nginx 
 
 This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 
-Nginx Mobile Theme is requires as follows.
+Nginx Mobile Theme's requirements are as follows.
 
 * PHP 5.3 or later
 * WordPress 3.7 or later
