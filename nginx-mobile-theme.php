@@ -4,7 +4,7 @@ Plugin Name: Nginx Mobile Theme
 Plugin URI: http://ninjax.cc/
 Description: This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 Author: miyauchi, megumithemes
-Version: 1.5.0
+Version: 1.6.0
 Author URI: http://ninjax.cc/
 
 Copyright 2013 Ninjax Team (email : info@ninjax.cc)
@@ -277,10 +277,10 @@ private function switch_theme($theme)
 /**
  * Return the determined user-agent from environments with filter.
  *
- * @access private
+ * @access public
  * @since  1.0.0
  */
-private function mobile_detect()
+public function mobile_detect()
 {
     $mobile_detect = '';
 
@@ -316,5 +316,6 @@ private function amimoto_support()
 }
 
 } // end class
+
 
 // EOF
