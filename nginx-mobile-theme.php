@@ -65,7 +65,7 @@ public function plugins_loaded()
 	}
 
 	$mobile_detect = $this->mobile_detect();
-	if ( $mobile_detect ) {
+	if ( $mobile_detect && ( !isset( $_GET['mobile']) || 'off' !== $_GET['mobile'] ) ) {
 		$mobile_theme = get_option( "nginxmobile_mobile_themes" );
 		/**
 		 * Filter the theme slug for mobile
