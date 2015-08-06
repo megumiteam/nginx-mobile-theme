@@ -65,7 +65,16 @@ public function plugins_loaded()
 	}
 
 	$mobile_detect = $this->mobile_detect();
-	if ( $mobile_detect && ( !isset( $_GET['mobile']) || 'off' !== $_GET['mobile'] ) ) {
+	if ( isset( $_GET['mobile']) && 'off' === $_GET['mobile'] ) {
+		add_filter( 'home_url', function( $home_url ){
+			return add_query_arg(
+				array(
+					'mobile' => 'off'
+				),
+				$home_url
+			);
+		} );
+	} elseif ( $mobile_detect && ( !isset( $_GET['mobile']) || 'off' !== $_GET['mobile'] ) ) {
 		$mobile_theme = get_option( "nginxmobile_mobile_themes" );
 		/**
 		 * Filter the theme slug for mobile
@@ -125,7 +134,7 @@ public function customize_controls_print_scripts()
 {
 ?>
 <script type="text/javascript">
-jQuery( document ).ready( function(){
+jQuery( document ).click( function(){
 	var $ = jQuery;
 	$( '.theme-preview' ).click( function(){
 		var theme = $( 'select:first', $( this ).parent().parent() ).val();
@@ -213,7 +222,7 @@ public function customize_register( $wp_customize )
 				'section'	 => 'nginxmobile',
 				'type'		=> 'select',
 				'choices'	 => $themes,
-				'label_after' => '<a href="javascript:void( 0 );" class="theme-preview">Theme Preview</a>',
+				'label_after' => '<a href="#" class="theme-preview">Theme Preview</a>',
 			)
 		) );
 	}
