@@ -74,6 +74,19 @@ public function plugins_loaded()
 				$home_url
 			);
 		} );
+	} elseif ( isset( $_GET['mobile']) && 'on' === $_GET['mobile'] ) {
+		$mobile_theme = get_option( "nginxmobile_mobile_themes" );
+		/**
+		 * Filter the theme slug for mobile
+		 *
+		 * @since 1.0.0
+		 * @param string $mobile_theme theme slug
+		 */
+		$mobile_theme = apply_filters( 'nginxmobile_mobile_themes', $mobile_theme );
+		$detect = apply_filters( 'mobile_detect_default', 'smartphone' );
+		if ( isset( $mobile_theme[$detect] ) && $mobile_theme[$detect] ) {
+			$this->switch_theme( $mobile_theme[$detect] );
+		}
 	} elseif ( $mobile_detect && ( !isset( $_GET['mobile']) || 'off' !== $_GET['mobile'] ) ) {
 		$mobile_theme = get_option( "nginxmobile_mobile_themes" );
 		/**
