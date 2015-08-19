@@ -4,7 +4,7 @@ Plugin Name: Nginx Mobile Theme
 Plugin URI: http://ninjax.cc/
 Description: This plugin allows you to switch theme according to the User Agent on the Nginx reverse proxy.
 Author: miyauchi, megumithemes
-Version: 1.8.0
+Version: 1.8.1
 Author URI: http://ninjax.cc/
 
 Copyright 2013 Ninjax Team ( email : info@ninjax.cc )
@@ -77,15 +77,29 @@ public function plugins_loaded()
 	} elseif ( isset( $_GET['mobile']) && 'on' === $_GET['mobile'] ) {
 		$mobile_theme = get_option( "nginxmobile_mobile_themes" );
 		/**
-		 * Filter the theme slug for mobile
+		 * Filters the theme slug for mobile
 		 *
 		 * @since 1.0.0
 		 * @param string $mobile_theme theme slug
 		 */
 		$mobile_theme = apply_filters( 'nginxmobile_mobile_themes', $mobile_theme );
+		/**
+		 * Filters the default theme detection
+		 *
+		 * @since 1.0.0
+		 * @param string $mobile_theme theme slug
+		 */
 		$detect = apply_filters( 'mobile_detect_default', 'smartphone' );
 		if ( isset( $mobile_theme[$detect] ) && $mobile_theme[$detect] ) {
 			$this->switch_theme( $mobile_theme[$detect] );
+			add_filter( 'home_url', function( $home_url ){
+				return add_query_arg(
+					array(
+						'mobile' => 'off'
+					),
+					$home_url
+				);
+			} );
 		}
 	} elseif ( $mobile_detect && ( !isset( $_GET['mobile']) || 'off' !== $_GET['mobile'] ) ) {
 		$mobile_theme = get_option( "nginxmobile_mobile_themes" );
